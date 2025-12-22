@@ -31,11 +31,13 @@ public class EmployeeWageManager : IEmployeeWageManager
         }
     }
 
+    // UC: Get Total Wage when queried by Company
     public int GetTotalWage(string companyName)
     {
         foreach (EmployeeWage company in companyList)
         {
-            if (company.getCompany().Equals(companyName))
+            if (company.getCompany()
+                       .Equals(companyName, StringComparison.OrdinalIgnoreCase))
             {
                 return company.getTotalEmpWage();
             }
@@ -130,7 +132,6 @@ public class EmployeeWage
     }
 }
 
-
 public class Program
 {
     public static void Main(string[] args)
@@ -143,8 +144,8 @@ public class Program
 
         manager.ComputeAllWages();
 
-        Console.WriteLine("DMart Wage : " + manager.GetTotalWage("DMart"));
-        Console.WriteLine("Reliance Wage : " + manager.GetTotalWage("Reliance"));
-        Console.WriteLine("TCS Wage : " + manager.GetTotalWage("TCS"));
+        Console.WriteLine("Queried DMart Wage : " + manager.GetTotalWage("DMart"));
+        Console.WriteLine("Queried Reliance Wage : " + manager.GetTotalWage("Reliance"));
+        Console.WriteLine("Queried TCS Wage : " + manager.GetTotalWage("tcs"));
     }
 }
