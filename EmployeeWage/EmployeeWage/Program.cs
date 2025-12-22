@@ -10,7 +10,12 @@ public interface IEmployeeWageManager
 
 public class EmployeeWageManager : IEmployeeWageManager
 {
-    private List<EmployeeWage> companyList = new List<EmployeeWage>();
+    private List<EmployeeWage> companyList;
+
+    public EmployeeWageManager()
+    {
+        companyList = new List<EmployeeWage>();
+    }
 
     public void AddCompany(string company, int ratePerHour, int workingDays, int maxHours)
     {
@@ -80,7 +85,6 @@ public class EmployeeWage
                totalWorkingDays < this.numOfWorkingDays)
         {
             totalWorkingDays++;
-
             int empCheck = random.Next(0, 3);
 
             switch (empCheck)
@@ -119,10 +123,12 @@ public class Program
 
         manager.AddCompany("DMart", 20, 2, 10);
         manager.AddCompany("Reliance", 10, 4, 20);
+        manager.AddCompany("TCS", 25, 22, 100);
 
         manager.ComputeAllWages();
 
         Console.WriteLine("DMart Wage : " + manager.GetTotalWage("DMart"));
         Console.WriteLine("Reliance Wage : " + manager.GetTotalWage("Reliance"));
+        Console.WriteLine("TCS Wage : " + manager.GetTotalWage("TCS"));
     }
 }
