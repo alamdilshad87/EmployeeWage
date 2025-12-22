@@ -1,6 +1,35 @@
 ﻿using System;
 using System.Globalization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+public class EmployeeWageManager
+{
+    private List<EmployeeWage> companyList = new List<EmployeeWage>();
+
+    public void AddCompany(EmployeeWage company)
+    {
+        companyList.Add(company);
+    }
+
+    public void ComputeAllWages()
+    {
+        foreach (EmployeeWage company in companyList)
+        {
+            company.computeEmpWage();
+        }
+    }
+
+    public void DisplayTotalWages()
+    {
+        foreach (EmployeeWage company in companyList)
+        {
+            Console.WriteLine(
+                "Company: " + company.getCompany() +
+                " | Total Wage: " + company.getTotalEmpWage()
+            );
+        }
+    }
+}
+
 public class EmployeeWage
 {
     public const int IS_PART_TIME = 1;
@@ -11,6 +40,15 @@ public class EmployeeWage
     private int numOfWorkingDays;
     private int maxHoursPerMonth;
     private int totalEmpWage;
+    public string getCompany()
+    {
+        return this.company;
+    }
+
+    public int getTotalEmpWage()
+    {
+        return this.totalEmpWage;
+    }
     public EmployeeWage(string company, int empRatePerHour, int numOfWorkingDays, int maxHoursPerMonth)
     {
         this.company = company;
@@ -52,9 +90,11 @@ public class EmployeeWage
     {
         EmployeeWage dMart = new EmployeeWage("DMart", 20, 2, 10);
         EmployeeWage reliance = new EmployeeWage("Reliance", 10, 4, 20);
-        dMart.computeEmpWage();
-        Console.WriteLine(dMart.toString());
-        reliance.computeEmpWage();
-        Console.WriteLine(reliance.toString());
+        EmployeeWageManager manager = new EmployeeWageManager();
+        manager.AddCompany(dMart);
+        manager.AddCompany(reliance);
+
+        manager.ComputeAllWages();
+        manager.DisplayTotalWages();
     }
 }
