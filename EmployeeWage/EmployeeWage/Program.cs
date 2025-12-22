@@ -55,6 +55,7 @@ public class EmployeeWage
     private int maxHoursPerMonth;
     private int totalEmpWage;
 
+    private List<int> dailyWageList;
     private static Random random = new Random();
 
     public EmployeeWage(string company, int empRatePerHour, int numOfWorkingDays, int maxHoursPerMonth)
@@ -63,6 +64,7 @@ public class EmployeeWage
         this.empRatePerHour = empRatePerHour;
         this.numOfWorkingDays = numOfWorkingDays;
         this.maxHoursPerMonth = maxHoursPerMonth;
+        this.dailyWageList = new List<int>();
     }
 
     public string getCompany()
@@ -81,10 +83,13 @@ public class EmployeeWage
         int totalEmpHrs = 0;
         int totalWorkingDays = 0;
 
+        dailyWageList.Clear();
+
         while (totalEmpHrs <= this.maxHoursPerMonth &&
                totalWorkingDays < this.numOfWorkingDays)
         {
             totalWorkingDays++;
+
             int empCheck = random.Next(0, 3);
 
             switch (empCheck)
@@ -102,10 +107,20 @@ public class EmployeeWage
                     break;
             }
 
+            int dailyWage = empHrs * empRatePerHour;
+            dailyWageList.Add(dailyWage);
+
             totalEmpHrs += empHrs;
         }
 
-        totalEmpWage = totalEmpHrs * this.empRatePerHour;
+        totalEmpWage = totalEmpHrs * empRatePerHour;
+
+        Console.WriteLine("Daily Wages for company : " + company);
+        foreach (int wage in dailyWageList)
+        {
+            Console.WriteLine(wage);
+        }
+
         Console.WriteLine("Total Emp Wage for company : " + company + " is : " + totalEmpWage);
     }
 
@@ -114,6 +129,7 @@ public class EmployeeWage
         return "Total Emp Wage for company : " + this.company + " is : " + this.totalEmpWage;
     }
 }
+
 
 public class Program
 {
