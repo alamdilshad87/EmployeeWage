@@ -1,13 +1,21 @@
 ﻿using System;
-using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-public class EmployeeWageManager
+using System.Collections.Generic;
+
+public interface IEmployeeWageManager
+{
+    void AddCompany(string company, int ratePerHour, int workingDays, int maxHours);
+    void ComputeAllWages();
+    int GetTotalWage(string company);
+}
+
+public class EmployeeWageManager : IEmployeeWageManager
 {
     private List<EmployeeWage> companyList = new List<EmployeeWage>();
 
-    public void AddCompany(EmployeeWage company)
+    public void AddCompany(string company, int ratePerHour, int workingDays, int maxHours)
     {
-        companyList.Add(company);
+        EmployeeWage empWage = new EmployeeWage(company, ratePerHour, workingDays, maxHours);
+        companyList.Add(empWage);
     }
 
     public void ComputeAllWages()
@@ -18,15 +26,16 @@ public class EmployeeWageManager
         }
     }
 
-    public void DisplayTotalWages()
+    public int GetTotalWage(string companyName)
     {
         foreach (EmployeeWage company in companyList)
         {
-            Console.WriteLine(
-                "Company: " + company.getCompany() +
-                " | Total Wage: " + company.getTotalEmpWage()
-            );
+            if (company.getCompany().Equals(companyName))
+            {
+                return company.getTotalEmpWage();
+            }
         }
+        return 0;
     }
 }
 
@@ -40,6 +49,17 @@ public class EmployeeWage
     private int numOfWorkingDays;
     private int maxHoursPerMonth;
     private int totalEmpWage;
+
+    private static Random random = new Random();
+
+    public EmployeeWage(string company, int empRatePerHour, int numOfWorkingDays, int maxHoursPerMonth)
+    {
+        this.company = company;
+        this.empRatePerHour = empRatePerHour;
+        this.numOfWorkingDays = numOfWorkingDays;
+        this.maxHoursPerMonth = maxHoursPerMonth;
+    }
+
     public string getCompany()
     {
         return this.company;
@@ -49,52 +69,60 @@ public class EmployeeWage
     {
         return this.totalEmpWage;
     }
-    public EmployeeWage(string company, int empRatePerHour, int numOfWorkingDays, int maxHoursPerMonth)
-    {
-        this.company = company;
-        this.empRatePerHour = empRatePerHour;
-        this.numOfWorkingDays = numOfWorkingDays;
-        this.maxHoursPerMonth = maxHoursPerMonth;
-    }
+
     public void computeEmpWage()
     {
-        int empHrs = 0, totalEmpHrs = 0, totalWorkingDays = 0;
-        while (totalEmpHrs <= this.maxHoursPerMonth && totalWorkingDays < this.numOfWorkingDays)
+        int empHrs = 0;
+        int totalEmpHrs = 0;
+        int totalWorkingDays = 0;
+
+        while (totalEmpHrs <= this.maxHoursPerMonth &&
+               totalWorkingDays < this.numOfWorkingDays)
         {
             totalWorkingDays++;
-            Random random = new Random();
+
             int empCheck = random.Next(0, 3);
+
             switch (empCheck)
             {
                 case IS_PART_TIME:
                     empHrs = 4;
                     break;
+
                 case IS_FULL_TIME:
                     empHrs = 8;
                     break;
+
                 default:
                     empHrs = 0;
                     break;
             }
+
             totalEmpHrs += empHrs;
-            Console.WriteLine("Day#:" + totalWorkingDays + " Emp Hrs : " + empHrs);
         }
+
         totalEmpWage = totalEmpHrs * this.empRatePerHour;
-        Console.WriteLine("Total Emp Wage for company:" + company + " is: " + totalEmpWage);
+        Console.WriteLine("Total Emp Wage for company : " + company + " is : " + totalEmpWage);
     }
+
     public string toString()
     {
-        return "Total Emp Wage for company : " + this.company + " is: " + this.totalEmpWage;
+        return "Total Emp Wage for company : " + this.company + " is : " + this.totalEmpWage;
     }
+}
+
+public class Program
+{
     public static void Main(string[] args)
     {
-        EmployeeWage dMart = new EmployeeWage("DMart", 20, 2, 10);
-        EmployeeWage reliance = new EmployeeWage("Reliance", 10, 4, 20);
-        EmployeeWageManager manager = new EmployeeWageManager();
-        manager.AddCompany(dMart);
-        manager.AddCompany(reliance);
+        IEmployeeWageManager manager = new EmployeeWageManager();
+
+        manager.AddCompany("DMart", 20, 2, 10);
+        manager.AddCompany("Reliance", 10, 4, 20);
 
         manager.ComputeAllWages();
-        manager.DisplayTotalWages();
+
+        Console.WriteLine("DMart Wage : " + manager.GetTotalWage("DMart"));
+        Console.WriteLine("Reliance Wage : " + manager.GetTotalWage("Reliance"));
     }
 }
